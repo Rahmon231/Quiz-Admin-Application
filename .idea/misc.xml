@@ -3,10 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-anydpi/delete_icon.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable-v24/category_border.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable-v24/main_background.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable-v24/progressbackground.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable-v24/round_corner.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_category.xml" value="0.125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/add_category_layout.xml" value="0.240625" />
+        <entry key="app/src/main/res/layout/loadingprogressbar.xml" value="0.11702127659574468" />
       </map>
     </option>
   </component>
