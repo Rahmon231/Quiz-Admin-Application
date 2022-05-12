@@ -1,12 +1,13 @@
 plugins {
     id 'com.android.application'
+
 }
 
 android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.lemzeeyyy.quizadminapplication"
+        applicationId "com.lemzeeyyy.quizapplication"
         minSdk 23
         targetSdk 31
         versionCode 1
@@ -30,7 +31,7 @@ android {
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -42,3 +43,5 @@ dependencies {
 apply plugin: 'com.android.application'
 // Add the following line:
 apply plugin: 'com.google.gms.google-services'  // Google Services plugin
+
+
