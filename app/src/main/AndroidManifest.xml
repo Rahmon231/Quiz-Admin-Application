@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QuizAdminApplication">
         <activity
-            android:name=".CategoryActivity"
+            android:name=".CourseActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
