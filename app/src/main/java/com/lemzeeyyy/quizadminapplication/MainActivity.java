@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -39,52 +41,45 @@ public class MainActivity extends AppCompatActivity {
         loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(email.getText().toString().isEmpty()){
-                    email.setError("Enter Email ID");
-                    return;
-                }
-                else{
-                    email.setError(null);
-                }
-                if(password.getText().toString().isEmpty()){
-                    password.setError("Enter password");
-                    return;
-                }
-                else{
-                    password.setError(null);
-                }
-                firebaseLogin();
+        loginBtn.setOnClickListener(view -> {
+            if(email.getText().toString().isEmpty()){
+                email.setError("Enter Email ID");
+                return;
             }
+            else{
+                email.setError(null);
+            }
+            if(password.getText().toString().isEmpty()){
+                password.setError("Enter password");
+                return;
+            }
+            else{
+                password.setError(null);
+            }
+            firebaseLogin();
         });
         if(firebaseAuth.getCurrentUser() != null){
-//            Intent intent = new Intent(MainActivity.this, CategoryActivity.class);
-//            startActivity(intent);
-//            finish();
+            Intent intent = new Intent(MainActivity.this, CategoryActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
     private void firebaseLogin(){
         loadingDialog.show();
         firebaseAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
 
-//                            Intent intent = new Intent(MainActivity.this, CategoryActivity.class);
-//                            startActivity(intent);
-//                            finish();
-                            //Toast.makeText(MainActivity.this,"Success",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this, CategoryActivity.class);
+                        startActivity(intent);
+                        finish();
+                        Toast.makeText(MainActivity.this,"Success",Toast.LENGTH_SHORT).show();
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(MainActivity.this,"Failed",Toast.LENGTH_SHORT).show();
-                        }
-                        loadingDialog.dismiss();
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Toast.makeText(MainActivity.this,"Failed",Toast.LENGTH_SHORT).show();
                     }
+                    loadingDialog.dismiss();
                 });
-
     }
 }
