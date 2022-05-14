@@ -13,6 +13,7 @@
         <entry key="app/src/main/res/layout/activity_category.xml" value="0.125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/add_category_layout.xml" value="0.240625" />
+        <entry key="app/src/main/res/layout/cat_item_layout.xml" value="0.240625" />
         <entry key="app/src/main/res/layout/catagory_item_layout.xml" value="0.240625" />
         <entry key="app/src/main/res/layout/edit_category_layout_dialog.xml" value="0.240625" />
         <entry key="app/src/main/res/layout/loadingprogressbar.xml" value="0.11702127659574468" />

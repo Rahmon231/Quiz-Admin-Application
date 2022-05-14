@@ -23,16 +23,9 @@ public class CourseActivity extends AppCompatActivity {
         addCourse = findViewById(R.id.addCourseBtn);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Courses");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         CourseAdapter adapter = new CourseAdapter(catList,CourseActivity.this);
-        courseGrid.setAdapter(adapter);
-    }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            CourseActivity.this.finish();
-        }
-        return super.onOptionsItemSelected(item);
+        courseRecyclerView.setAdapter(adapter);
     }
 }
