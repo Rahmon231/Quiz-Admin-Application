@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.ArrayMap;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +19,21 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CourseActivity extends AppCompatActivity {
     private RecyclerView courseRecyclerView;
     private Button addCourse;
     public static List<CourseModel> courseList;
+    CourseAdapter adapter;
     private FirebaseFirestore firestore;
     private Dialog loadingDialog, addCourseDialog;
     private EditText dialogCourseName;
@@ -83,9 +88,53 @@ public class CourseActivity extends AppCompatActivity {
 
     }
 
-    private void addNewCourse(String courseName) {
+    private void addNewCourse(String title) {
         addCourseDialog.dismiss();
         loadingDialog.show();
+        Map<String, Object> courseData = new ArrayMap<>();
+        courseData.put("NAME",title);
+        courseData.put("DIFFICULTY",0);
+        String doc_id = firestore.collection("QUIZ").document().getId();
+        firestore.collection("QUIZ").document(doc_id).set(courseData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Map<String,Object> catDoc = new ArrayMap<>();
+                        catDoc.put("CAT" + String.valueOf(courseList.size()+1)+"_NAME",title);
+                        catDoc.put("CAT" + String.valueOf(courseList.size()+1)+"_ID",doc_id);
+                        catDoc.put("COUNT", courseList.size()+1);
+                        firestore.collection("QUIZ").document("Categories")
+                                .update(catDoc).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(CourseActivity.this,"category added successfully",Toast.LENGTH_SHORT).show();
+                                courseList.add(new CourseModel(doc_id,title,0));
+                                adapter.notifyItemInserted(courseList.size());
+                                loadingDialog.dismiss();
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                                Toast.makeText(CourseActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                                loadingDialog.dismiss();
+
+                            }
+                        });
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CourseActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                        loadingDialog.dismiss();
+                        //
+
+                    }
+                });
+
 
     }
 
@@ -103,7 +152,7 @@ public class CourseActivity extends AppCompatActivity {
                                 String courseId = doc.getString("CAT"+String.valueOf(i)+"_ID");
                                 courseList.add(new CourseModel(courseId,courseName,0));
                             }
-                            CourseAdapter adapter = new CourseAdapter(courseList,CourseActivity.this);
+                            adapter = new CourseAdapter(courseList,CourseActivity.this);
                             courseRecyclerView.setAdapter(adapter);
 
                         }else {
