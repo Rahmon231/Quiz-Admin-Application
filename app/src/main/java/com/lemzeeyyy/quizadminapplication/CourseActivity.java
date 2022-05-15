@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -29,7 +30,9 @@ public class CourseActivity extends AppCompatActivity {
     private Button addCourse;
     public static List<CourseModel> courseList;
     private FirebaseFirestore firestore;
-    private Dialog loadingDialog;
+    private Dialog loadingDialog, addCourseDialog;
+    private EditText dialogCourseName;
+    private Button dialogAddBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,23 +49,46 @@ public class CourseActivity extends AppCompatActivity {
         loadingDialog.setCancelable(false);
         loadingDialog.getWindow().setBackgroundDrawableResource(R.drawable.progressbackground);
         loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-
         firestore = FirebaseFirestore.getInstance();
         loadDate();
+
+        addCourseDialog = new Dialog(CourseActivity.this);
+        addCourseDialog.setContentView(R.layout.add_course_layout);
+        addCourseDialog.setCancelable(true);
+        addCourseDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialogCourseName = addCourseDialog.findViewById(R.id.add_course_name);
+        dialogAddBtn = addCourseDialog.findViewById(R.id.course_add_btn);
+
         addCourse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                dialogCourseName.getText().clear();
+                addCourseDialog.show();
             }
         });
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        dialogAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (dialogCourseName.getText().toString().isEmpty()){
+                    dialogCourseName.setError("Enter Category name");
+                    return;
+                }
+                addNewCourse(dialogCourseName.getText().toString());
+            }
+        });
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         courseRecyclerView.setLayoutManager(layoutManager);
 
 
     }
+
+    private void addNewCourse(String courseName) {
+        addCourseDialog.dismiss();
+        loadingDialog.show();
+
+    }
+
     private void loadDate() {
         loadingDialog.show();
         courseList.clear();
