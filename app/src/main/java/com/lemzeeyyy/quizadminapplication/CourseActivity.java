@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
@@ -26,7 +27,7 @@ import java.util.List;
 public class CourseActivity extends AppCompatActivity {
     private RecyclerView courseRecyclerView;
     private Button addCourse;
-    private List<String> courseList;
+    public static List<CourseModel> courseList;
     private FirebaseFirestore firestore;
     private Dialog loadingDialog;
 
@@ -48,6 +49,12 @@ public class CourseActivity extends AppCompatActivity {
 
         firestore = FirebaseFirestore.getInstance();
         loadDate();
+        addCourse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -66,8 +73,9 @@ public class CourseActivity extends AppCompatActivity {
                         if(doc.exists()){
                             long count = (long)doc.get("COUNT");
                             for (int i = 1; i <= count; i++) {
-                                String courseName = doc.getString("CAT"+String.valueOf(i));
-                                courseList.add(courseName);
+                                String courseName = doc.getString("CAT"+String.valueOf(i)+"_NAME");
+                                String courseId = doc.getString("CAT"+String.valueOf(i)+"_ID");
+                                courseList.add(new CourseModel(courseId,courseName,0));
                             }
                             CourseAdapter adapter = new CourseAdapter(courseList,CourseActivity.this);
                             courseRecyclerView.setAdapter(adapter);
