@@ -33,7 +33,7 @@ public class CourseActivity extends AppCompatActivity {
     private RecyclerView courseRecyclerView;
     private Button addCourse;
     public static List<CourseModel> courseList;
-    CourseAdapter adapter;
+    private CourseAdapter adapter;
     private FirebaseFirestore firestore;
     private Dialog loadingDialog, addCourseDialog;
     private EditText dialogCourseName;
@@ -95,35 +95,33 @@ public class CourseActivity extends AppCompatActivity {
         courseData.put("NAME",title);
         courseData.put("DIFFICULTY",0);
         String doc_id = firestore.collection("QUIZ").document().getId();
-        firestore.collection("QUIZ").document(doc_id).set(courseData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Map<String,Object> catDoc = new ArrayMap<>();
-                        catDoc.put("CAT" + String.valueOf(courseList.size()+1)+"_NAME",title);
-                        catDoc.put("CAT" + String.valueOf(courseList.size()+1)+"_ID",doc_id);
-                        catDoc.put("COUNT", courseList.size()+1);
-                        firestore.collection("QUIZ").document("Categories")
-                                .update(catDoc).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(CourseActivity.this,"category added successfully",Toast.LENGTH_SHORT).show();
-                                courseList.add(new CourseModel(doc_id,title,0));
-                                adapter.notifyItemInserted(courseList.size());
-                                loadingDialog.dismiss();
+        firestore.collection("QUIZ").document(doc_id)
+                .set(courseData)
+                .addOnSuccessListener(unused -> {
+                    Map<String,Object> catDoc = new ArrayMap<>();
+                    catDoc.put("CAT" + String.valueOf(courseList.size()+1)+"_NAME",title);
+                    catDoc.put("CAT" + String.valueOf(courseList.size()+1)+"_ID",doc_id);
+                    catDoc.put("COUNT", courseList.size()+1);
+                    firestore.collection("QUIZ").document("Categories")
+                            .update(catDoc).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(CourseActivity.this,"category added successfully",Toast.LENGTH_SHORT).show();
+                            courseList.add(new CourseModel(doc_id,title,0));
+                            adapter.notifyItemInserted(courseList.size());
+                            loadingDialog.dismiss();
 
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
 
-                                Toast.makeText(CourseActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
-                                loadingDialog.dismiss();
+                            Toast.makeText(CourseActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                            loadingDialog.dismiss();
 
-                            }
-                        });
+                        }
+                    });
 
-                    }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -152,7 +150,7 @@ public class CourseActivity extends AppCompatActivity {
                                 String courseId = doc.getString("CAT"+String.valueOf(i)+"_ID");
                                 courseList.add(new CourseModel(courseId,courseName,0));
                             }
-                            adapter = new CourseAdapter(courseList,CourseActivity.this);
+                            adapter = new CourseAdapter(courseList,this);
                             courseRecyclerView.setAdapter(adapter);
 
                         }else {

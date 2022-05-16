@@ -1,2 +1,5 @@
-package com.lemzeeyyy.quizadminapplication;public interface onDeleteClick {
+package com.lemzeeyyy.quizadminapplication;
+
+public interface onDeleteClick {
+    void deleteClick(int position, CourseModel courseList);
 }
