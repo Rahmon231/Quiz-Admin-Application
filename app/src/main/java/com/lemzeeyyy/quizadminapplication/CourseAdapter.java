@@ -27,10 +27,12 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
     private List<CourseModel> courseList;
     private Context context;
     private Dialog loadingDialog;
+    private onDeleteClick onDeleteClick;
 
-    public CourseAdapter(List<CourseModel> courseList, Context context) {
+    public CourseAdapter(List<CourseModel> courseList, Context context,onDeleteClick onDeleteClick) {
         this.courseList = courseList;
         this.context = context;
+        this.onDeleteClick = onDeleteClick;
     }
 
     @NonNull
@@ -73,19 +75,20 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
             courseName.setText(title);
             deleteBtn.setOnClickListener(view -> {
 
-                Log.d("checkDelete", "setData: deleted");
-                AlertDialog dialog = new AlertDialog.Builder(itemView.getContext())
-                        .setTitle("Delete category")
-                        .setMessage("Do you want to delete this category")
-                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                deleteCategory(pos,itemView.getContext(), adapter);
-                            }
-                        })
-                        .setNegativeButton("Cancel",null)
-                        .setIcon(R.drawable.ic_baseline_warning_24)
-                        .show();
+//                Log.d("checkDelete", "setData: deleted");
+//                AlertDialog dialog = new AlertDialog.Builder(itemView.getContext())
+//                        .setTitle("Delete category")
+//                        .setMessage("Do you want to delete this category")
+//                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                deleteCategory(pos,itemView.getContext(), adapter);
+//                            }
+//                        })
+//                        .setNegativeButton("Cancel",null)
+//                        .setIcon(R.drawable.ic_baseline_warning_24)
+//                        .show();
+                onDeleteClick.deleteClick(getAdapterPosition(),courseList);
             });
         }
     }

@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class CourseActivity extends AppCompatActivity {
+public class CourseActivity extends AppCompatActivity implements onDeleteClick{
     private RecyclerView courseRecyclerView;
     private Button addCourse;
     public static List<CourseModel> courseList;
@@ -150,7 +151,7 @@ public class CourseActivity extends AppCompatActivity {
                                 String courseId = doc.getString("CAT"+String.valueOf(i)+"_ID");
                                 courseList.add(new CourseModel(courseId,courseName,0));
                             }
-                            adapter = new CourseAdapter(courseList,this);
+                            adapter = new CourseAdapter(courseList,CourseActivity.this,this);
                             courseRecyclerView.setAdapter(adapter);
 
                         }else {
@@ -163,5 +164,13 @@ public class CourseActivity extends AppCompatActivity {
                     loadingDialog.dismiss();
 
                 });
+
+    }
+
+    @Override
+    public void deleteClick(int position, List<CourseModel> courseList) {
+        Log.d("ondeleteclickcheck", "deleteClick: "+CourseActivity.courseList.get(position).getCourseName());
+        CourseActivity.courseList.remove(position);
+        adapter.notifyDataSetChanged();
     }
 }

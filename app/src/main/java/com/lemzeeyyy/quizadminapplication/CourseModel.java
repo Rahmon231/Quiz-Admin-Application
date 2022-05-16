@@ -1,9 +1,12 @@
 package com.lemzeeyyy.quizadminapplication;
 
+import java.util.List;
+
 public class CourseModel {
     private String courseId;
     private String courseName;
     private int difficulty_level;
+
 
     public CourseModel(String courseId, String courseName, int difficulty_level) {
         this.courseId = courseId;
