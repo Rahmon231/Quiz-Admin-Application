@@ -6,7 +6,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.ArrayMap;
@@ -56,6 +59,7 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
         loadingDialog.getWindow().setBackgroundDrawableResource(R.drawable.progressbackground);
         loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
         firestore = FirebaseFirestore.getInstance();
+
         loadDate();
 
         addCourseDialog = new Dialog(CourseActivity.this);
@@ -65,22 +69,16 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
         dialogCourseName = addCourseDialog.findViewById(R.id.add_course_name);
         dialogAddBtn = addCourseDialog.findViewById(R.id.course_add_btn);
 
-        addCourse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogCourseName.getText().clear();
-                addCourseDialog.show();
-            }
+        addCourse.setOnClickListener(view -> {
+            dialogCourseName.getText().clear();
+            addCourseDialog.show();
         });
-        dialogAddBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (dialogCourseName.getText().toString().isEmpty()){
-                    dialogCourseName.setError("Enter Category name");
-                    return;
-                }
-                addNewCourse(dialogCourseName.getText().toString());
+        dialogAddBtn.setOnClickListener(view -> {
+            if (dialogCourseName.getText().toString().isEmpty()){
+                dialogCourseName.setError("Enter Category name");
+                return;
             }
+            addNewCourse(dialogCourseName.getText().toString());
         });
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -170,7 +168,42 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
     @Override
     public void deleteClick(int position, List<CourseModel> courseList) {
         Log.d("ondeleteclickcheck", "deleteClick: "+CourseActivity.courseList.get(position).getCourseName());
-        CourseActivity.courseList.remove(position);
+        AlertDialog dialog = new AlertDialog.Builder(CourseActivity.this)
+                .setTitle("Delete category")
+                .setMessage("Do you want to delete this category")
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        deleteCategory(position,CourseActivity.this, adapter);
+                    }
+                })
+                .setNegativeButton("Cancel",null)
+                .setIcon(R.drawable.ic_baseline_warning_24)
+                .show();
         adapter.notifyDataSetChanged();
+    }
+    private void deleteCategory(final int pos, Context context, CourseAdapter adapter) {
+        loadingDialog.show();
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        Map<String,Object> courseDoc = new ArrayMap<>();
+        int index = 1;
+        for (int i = 0; i < courseList.size(); i++) {
+            if(i != pos){
+                courseDoc.put("CAT"+index +"_ID",courseList.get(i).getCourseId());
+                courseDoc.put("CAT"+index +"_NAME",courseList.get(i).getCourseName());
+                index++;
+            }
+        }
+        courseDoc.put("COUNT",index-1);
+        firestore.collection("QUIZ").document("Categories")
+                .set(courseDoc).addOnSuccessListener(unused -> {
+                    Toast.makeText(context, "Category deleted successfully", Toast.LENGTH_SHORT)
+                            .show();
+                    CourseActivity.courseList.remove(pos);
+                    adapter.notifyDataSetChanged();
+                    loadingDialog.dismiss();
+
+                }).addOnFailureListener(e -> Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show());
+
     }
 }

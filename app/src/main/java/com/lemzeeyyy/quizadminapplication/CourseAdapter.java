@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,8 +28,8 @@ import java.util.Map;
 public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder> {
     private List<CourseModel> courseList;
     private Context context;
-    private Dialog loadingDialog;
     private onDeleteClick onDeleteClick;
+    private Dialog loadingDialog;
 
     public CourseAdapter(List<CourseModel> courseList, Context context,onDeleteClick onDeleteClick) {
         this.courseList = courseList;
@@ -57,6 +59,10 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView courseName;
         private ImageView deleteBtn;
+        private Dialog editCourseDialog;
+        private EditText courseEditText;
+        private Button updateCourseBtn;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -67,6 +73,13 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
             loadingDialog.setCancelable(false);
             loadingDialog.getWindow().setBackgroundDrawableResource(R.drawable.progressbackground);
             loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            editCourseDialog = new Dialog(itemView.getContext());
+            editCourseDialog.setContentView(R.layout.edit_course_layout_dialog);
+            editCourseDialog.setCancelable(true);
+            editCourseDialog.getWindow().setBackgroundDrawableResource(R.drawable.progressbackground);
+            editCourseDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            updateCourseBtn = editCourseDialog.findViewById(R.id.updateCourseName);
+            courseEditText = editCourseDialog.findViewById(R.id.editCourseNameET);
 
 
         }
@@ -74,22 +87,46 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
         public void setData(String title, int pos, CourseAdapter adapter) {
             courseName.setText(title);
             deleteBtn.setOnClickListener(view -> {
+                /* Log.d("checkDelete", "setData: deleted");
+                AlertDialog dialog = new AlertDialog.Builder(itemView.getContext())
+                        .setTitle("Delete category")
+                        .setMessage("Do you want to delete this category")
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                deleteCategory(pos,itemView.getContext(), adapter);
+                            }
+                        })
+                        .setNegativeButton("Cancel",null)
+                        .setIcon(R.drawable.ic_baseline_warning_24)
+                        .show(); */
 
-//                Log.d("checkDelete", "setData: deleted");
-//                AlertDialog dialog = new AlertDialog.Builder(itemView.getContext())
-//                        .setTitle("Delete category")
-//                        .setMessage("Do you want to delete this category")
-//                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int i) {
-//                                deleteCategory(pos,itemView.getContext(), adapter);
-//                            }
-//                        })
-//                        .setNegativeButton("Cancel",null)
-//                        .setIcon(R.drawable.ic_baseline_warning_24)
-//                        .show();
                 onDeleteClick.deleteClick(getAdapterPosition(),courseList);
             });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Log.d("longclick", "onLongClick: Long Clicked");
+                    courseEditText.setText(courseList.get(pos).getCourseName());
+                    editCourseDialog.show();
+                    if(view.getId() == R.id.courseNameID) {
+                        Log.d("CheckCourseName", "onLongClick: " + courseName.getText().toString());
+                    }
+
+                    return false;
+                }
+            });
+            updateCourseBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("updateclicked", "onClick: update clicked");
+                    if (courseEditText.getText().toString().isEmpty()){
+                        courseEditText.setError("Enter category name");
+                        return;
+                    }
+                }
+            });
+
         }
     }
 

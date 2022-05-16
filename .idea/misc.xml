@@ -19,6 +19,7 @@
         <entry key="app/src/main/res/layout/catagory_item_layout.xml" value="0.240625" />
         <entry key="app/src/main/res/layout/course_item_layout.xml" value="0.240625" />
         <entry key="app/src/main/res/layout/edit_category_layout_dialog.xml" value="0.240625" />
+        <entry key="app/src/main/res/layout/edit_course_layout_dialog.xml" value="0.1640625" />
         <entry key="app/src/main/res/layout/loadingprogressbar.xml" value="0.11702127659574468" />
       </map>
     </option>
