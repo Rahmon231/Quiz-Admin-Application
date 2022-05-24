@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -80,8 +81,6 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
             editCourseDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
             updateCourseBtn = editCourseDialog.findViewById(R.id.updateCourseName);
             courseEditText = editCourseDialog.findViewById(R.id.editCourseNameET);
-
-
         }
 
         public void setData(String title, int pos, CourseAdapter adapter) {
@@ -102,6 +101,13 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
                         .show(); */
 
                 onDeleteClick.deleteClick(getAdapterPosition(),courseList);
+            });
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(itemView.getContext(),DifficultyActivity.class);
+                    itemView.getContext().startActivity(intent);
+                }
             });
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
