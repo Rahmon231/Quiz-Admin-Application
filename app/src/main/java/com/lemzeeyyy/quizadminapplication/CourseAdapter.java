@@ -30,6 +30,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
     private Context context;
     private onDeleteClick onDeleteClick;
     private Dialog loadingDialog;
+    private Dialog editCourseDialog;
 
     public CourseAdapter(List<CourseModel> courseList, Context context,onDeleteClick onDeleteClick) {
         this.courseList = courseList;
@@ -59,7 +60,6 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView courseName;
         private ImageView deleteBtn;
-        private Dialog editCourseDialog;
         private EditText courseEditText;
         private Button updateCourseBtn;
 
@@ -109,9 +109,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
                     Log.d("longclick", "onLongClick: Long Clicked");
                     courseEditText.setText(courseList.get(pos).getCourseName());
                     editCourseDialog.show();
-                    if(view.getId() == R.id.courseNameID) {
-                        Log.d("CheckCourseName", "onLongClick: " + courseName.getText().toString());
-                    }
+                    Log.d("CheckCourseName", "onLongClick: " + courseName.getText().toString());
 
                     return false;
                 }
@@ -124,10 +122,13 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
                         courseEditText.setError("Enter category name");
                         return;
                     }
+                    updateCategory(courseEditText.getText().toString(), pos, itemView.getContext(), adapter);
                 }
             });
 
         }
+
+
     }
 
     private void deleteCategory(final int pos, Context context, CourseAdapter adapter) {
@@ -158,6 +159,46 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+    private void updateCategory(String courseNewName, int pos,Context context, CourseAdapter adapter) {
+        editCourseDialog.dismiss();
+        loadingDialog.show();
+        Map<String,Object> courseData = new ArrayMap<>();
+        courseData.put("NAME",courseNewName);
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore.collection("QUIZ").document(courseList.get(pos).getCourseId())
+                .update(courseData)
+                .addOnSuccessListener(unused -> {
+                    Map<String,Object> courseData1 = new ArrayMap<>();
+                    courseData1.put("CAT"+(pos+1)+"_NAME",courseNewName);
+                    firestore.collection("QUIZ").document("Categories")
+                            .update(courseData1)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(context, "Course Added Successfully", Toast.LENGTH_SHORT).show();
+                                    CourseActivity.courseList.get(pos).setCourseName(courseNewName);
+                                    adapter.notifyDataSetChanged();
+                                    loadingDialog.dismiss();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(context, e.getMessage(),Toast.LENGTH_SHORT).show();
+                            loadingDialog.dismiss();
+                        }
+                    });
+
+
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, e.getMessage(),Toast.LENGTH_SHORT).show();
+                loadingDialog.dismiss();
+
             }
         });
 

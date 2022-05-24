@@ -78,7 +78,15 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
                 dialogCourseName.setError("Enter Category name");
                 return;
             }
-            addNewCourse(dialogCourseName.getText().toString());
+            for (int i = 0; i < courseList.size(); i++) {
+                if(dialogCourseName.getText().toString().equalsIgnoreCase(courseList.get(i).getCourseName())){
+                    Log.d("ExistingCourse", "addNewCourse: Course already exists");
+                    break;
+                }else
+                    addNewCourse(dialogCourseName.getText().toString());
+                break;
+            }
+
         });
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -91,49 +99,48 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
         addCourseDialog.dismiss();
         loadingDialog.show();
         Map<String, Object> courseData = new ArrayMap<>();
-        courseData.put("NAME",title);
-        courseData.put("DIFFICULTY",0);
-        String doc_id = firestore.collection("QUIZ").document().getId();
-        firestore.collection("QUIZ").document(doc_id)
-                .set(courseData)
-                .addOnSuccessListener(unused -> {
-                    Map<String,Object> catDoc = new ArrayMap<>();
-                    catDoc.put("CAT" + String.valueOf(courseList.size()+1)+"_NAME",title);
-                    catDoc.put("CAT" + String.valueOf(courseList.size()+1)+"_ID",doc_id);
-                    catDoc.put("COUNT", courseList.size()+1);
-                    firestore.collection("QUIZ").document("Categories")
-                            .update(catDoc).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Toast.makeText(CourseActivity.this,"category added successfully",Toast.LENGTH_SHORT).show();
-                            courseList.add(new CourseModel(doc_id,title,0));
-                            adapter.notifyItemInserted(courseList.size());
-                            loadingDialog.dismiss();
+                courseData.put("NAME",title);
+                courseData.put("DIFFICULTY",0);
+                courseData.put("COUNTER",1);
+                String doc_id = firestore.collection("QUIZ").document().getId();
+                firestore.collection("QUIZ").document(doc_id)
+                        .set(courseData)
+                        .addOnSuccessListener(unused -> {
+                            Map<String,Object> catDoc = new ArrayMap<>();
+                            catDoc.put("CAT" + String.valueOf(courseList.size()+1)+"_NAME",title);
+                            catDoc.put("CAT" + String.valueOf(courseList.size()+1)+"_ID",doc_id);
+                            catDoc.put("COUNT", courseList.size()+1);
+                            firestore.collection("QUIZ").document("Categories")
+                                    .update(catDoc).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(CourseActivity.this,"category added successfully",Toast.LENGTH_SHORT).show();
+                                    courseList.add(new CourseModel(doc_id,title,0));
+                                    adapter.notifyItemInserted(courseList.size());
+                                    loadingDialog.dismiss();
 
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
 
-                            Toast.makeText(CourseActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
-                            loadingDialog.dismiss();
+                                    Toast.makeText(CourseActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                                    loadingDialog.dismiss();
 
-                        }
-                    });
+                                }
+                            });
 
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(CourseActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
-                        loadingDialog.dismiss();
-                        //
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(CourseActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                                loadingDialog.dismiss();
+                                //
 
-                    }
-                });
-
-
-    }
+                            }
+                        });
+        }
 
     private void loadDate() {
         loadingDialog.show();
