@@ -6,12 +6,22 @@ public class CourseModel {
     private String courseId;
     private String courseName;
     private int difficulty_level;
+    private String diffCounter;
 
 
-    public CourseModel(String courseId, String courseName, int difficulty_level) {
+    public CourseModel(String courseId, String courseName, int difficulty_level, String diffCounter) {
         this.courseId = courseId;
         this.courseName = courseName;
         this.difficulty_level = difficulty_level;
+        this.diffCounter = diffCounter;
+    }
+
+    public String getDiffCounter() {
+        return diffCounter;
+    }
+
+    public void setDiffCounter(String diffCounter) {
+        this.diffCounter = diffCounter;
     }
 
     public String getCourseId() {

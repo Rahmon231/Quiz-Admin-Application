@@ -48,7 +48,7 @@ public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyAdapter.Vi
         }
 
         public void setData(int pos) {
-            difficultyName.setText("DIFFICULTY_"+String.valueOf(pos+1));
+            difficultyName.setText("LEVEL_"+String.valueOf(pos+1));
         }
     }
 }

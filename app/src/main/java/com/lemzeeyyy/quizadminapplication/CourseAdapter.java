@@ -105,6 +105,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CourseActivity.selectedCourseIndex = pos;
                     Intent intent = new Intent(itemView.getContext(),DifficultyActivity.class);
                     itemView.getContext().startActivity(intent);
                 }
