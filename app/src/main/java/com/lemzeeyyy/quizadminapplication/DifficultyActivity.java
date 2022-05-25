@@ -5,6 +5,7 @@ import static com.lemzeeyyy.quizadminapplication.CourseActivity.selectedCourseIn
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +41,9 @@ public class DifficultyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_difficulty);
         diffRecyclerVier = findViewById(R.id.diff_recyclerID);
         addDiffBtn = findViewById(R.id.addDifficulty);
+        Toolbar toolbar = findViewById(R.id.diffToolBarID);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Difficulty Levels");
         loadingDialog = new Dialog(DifficultyActivity.this);
         loadingDialog.setContentView(R.layout.loadingprogressbar);
         loadingDialog.setCancelable(false);
@@ -73,7 +77,7 @@ public class DifficultyActivity extends AppCompatActivity {
                     Map<String,Object> courseDoc = new ArrayMap<>();
                     Log.d("CounterCheck", "addNewDiffLevel: "+String.valueOf(Integer.parseInt(curr_counter)+1));
                     courseDoc.put("COUNTER",(String.valueOf(Integer.parseInt(curr_counter)+1)));
-                    courseDoc.put("DIFFICULTY"+String.valueOf(difficultyIDs.size()+1)+"_ID",curr_counter);
+                    courseDoc.put("DIFFICULTY"+(difficultyIDs.size()+1)+"_ID",curr_counter);
                     courseDoc.put("DIFFICULTY",difficultyIDs.size()+1);
                     firestore.collection("QUIZ").document(curr_courseId)
                             .update(courseDoc)
@@ -82,7 +86,7 @@ public class DifficultyActivity extends AppCompatActivity {
                                         Toast.LENGTH_SHORT).show();
                                 difficultyIDs.add(curr_counter);
                                 courseList.get(selectedCourseIndex).setDifficulty_level(difficultyIDs.size());
-                                courseList.get(selectedCourseIndex).setDiffCounter(String.valueOf(Integer.parseInt(curr_counter))+1);
+                                courseList.get(selectedCourseIndex).setDiffCounter(String.valueOf(Integer.parseInt(curr_counter)+1));
                                 adapter.notifyItemInserted(difficultyIDs.size());
                                 loadingDialog.dismiss();
                             })
