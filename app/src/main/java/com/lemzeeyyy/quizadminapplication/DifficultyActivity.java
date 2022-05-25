@@ -46,7 +46,7 @@ public class DifficultyActivity extends AppCompatActivity {
         addDiffBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                addNewDiffLevel();
             }
         });
         firestore = FirebaseFirestore.getInstance();
@@ -54,6 +54,10 @@ public class DifficultyActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         diffRecyclerVier.setLayoutManager(layoutManager);
         loadDifficulty();
+    }
+
+    private void addNewDiffLevel() {
+
     }
 
     private void loadDifficulty() {
@@ -65,7 +69,7 @@ public class DifficultyActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 long noOfLevel = (long) documentSnapshot.get("DIFFICULTY");
                 for (int i = 0; i < noOfLevel ; i++){
-                    difficultyIDs.add(documentSnapshot.getString("DIFFICULTY")+i+"_ID");
+                    difficultyIDs.add(documentSnapshot.get("DIFFICULTY")+String.valueOf(i)+"_ID");
                 }
                 courseList.get(selectedCourseIndex).setDiffCounter(documentSnapshot.getString("COUNTER"));
                 courseList.get(selectedCourseIndex).setDifficulty_level(Integer.parseInt(String.valueOf(noOfLevel)));
