@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.ArrayMap;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DifficultyActivity extends AppCompatActivity {
     private RecyclerView diffRecyclerVier;
@@ -57,7 +60,42 @@ public class DifficultyActivity extends AppCompatActivity {
     }
 
     private void addNewDiffLevel() {
-
+        loadingDialog.dismiss();
+        String curr_courseId = courseList.get(selectedCourseIndex).getCourseId();
+        final String curr_counter = courseList.get(selectedCourseIndex).getDiffCounter();
+        Map<String, Object> qData = new ArrayMap<>();
+        qData.put("COUNT","0");
+        firestore.collection("QUIZ").document(curr_courseId)
+                .collection(curr_counter)
+                .document("QUESTION_LIST")
+                .set(qData)
+                .addOnSuccessListener(unused -> {
+                    Map<String,Object> courseDoc = new ArrayMap<>();
+                    Log.d("CounterCheck", "addNewDiffLevel: "+String.valueOf(Integer.parseInt(curr_counter)+1));
+                    courseDoc.put("COUNTER",(String.valueOf(Integer.parseInt(curr_counter)+1)));
+                    courseDoc.put("DIFFICULTY"+String.valueOf(difficultyIDs.size()+1)+"_ID",curr_counter);
+                    courseDoc.put("DIFFICULTY",difficultyIDs.size()+1);
+                    firestore.collection("QUIZ").document(curr_courseId)
+                            .update(courseDoc)
+                            .addOnSuccessListener(unused1 -> {
+                                Toast.makeText(DifficultyActivity.this, "Difficulty Level Added Successfully",
+                                        Toast.LENGTH_SHORT).show();
+                                difficultyIDs.add(curr_counter);
+                                courseList.get(selectedCourseIndex).setDifficulty_level(difficultyIDs.size());
+                                courseList.get(selectedCourseIndex).setDiffCounter(String.valueOf(Integer.parseInt(curr_counter))+1);
+                                adapter.notifyItemInserted(difficultyIDs.size());
+                                loadingDialog.dismiss();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(DifficultyActivity.this, e.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                                loadingDialog.dismiss();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(DifficultyActivity.this, e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void loadDifficulty() {

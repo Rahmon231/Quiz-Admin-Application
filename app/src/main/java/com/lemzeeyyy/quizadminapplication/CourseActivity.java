@@ -102,7 +102,7 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
         Map<String, Object> courseData = new ArrayMap<>();
                 courseData.put("NAME",title);
                 courseData.put("DIFFICULTY",0);
-                courseData.put("COUNTER",1);
+                courseData.put("COUNTER","1");
                 String doc_id = firestore.collection("QUIZ").document().getId();
                 firestore.collection("QUIZ").document(doc_id)
                         .set(courseData)
