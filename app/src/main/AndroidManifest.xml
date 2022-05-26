@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QuizAdminApplication">
         <activity
+            android:name=".QuestionsActivity"
+            android:exported="false" />
+        <activity
             android:name=".DifficultyActivity"
             android:exported="false" />
         <activity

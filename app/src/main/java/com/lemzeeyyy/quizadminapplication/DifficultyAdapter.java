@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +74,13 @@ public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyAdapter.Vi
 
         public void setData(int pos, String difficultyId, DifficultyAdapter adapter) {
             difficultyName.setText("LEVEL_"+String.valueOf(pos+1));
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(itemView.getContext(),QuestionsActivity.class);
+                    itemView.getContext().startActivity(intent);
+                }
+            });
             deleteDifficulty.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
