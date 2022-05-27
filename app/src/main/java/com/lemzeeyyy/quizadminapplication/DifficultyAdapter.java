@@ -2,6 +2,7 @@ package com.lemzeeyyy.quizadminapplication;
 
 import static com.lemzeeyyy.quizadminapplication.CourseActivity.courseList;
 import static com.lemzeeyyy.quizadminapplication.CourseActivity.selectedCourseIndex;
+import static com.lemzeeyyy.quizadminapplication.DifficultyActivity.selected_diff_level_index;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -77,6 +78,7 @@ public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                 selected_diff_level_index = pos;
                     Intent intent = new Intent(itemView.getContext(),QuestionsActivity.class);
                     itemView.getContext().startActivity(intent);
                 }

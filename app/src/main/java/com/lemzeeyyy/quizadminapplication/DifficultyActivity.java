@@ -34,6 +34,7 @@ public class DifficultyActivity extends AppCompatActivity {
     private DifficultyAdapter adapter;
     FirebaseFirestore firestore;
     private Dialog loadingDialog;
+    public static int selected_diff_level_index =  0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
