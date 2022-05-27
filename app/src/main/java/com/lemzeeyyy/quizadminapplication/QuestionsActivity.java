@@ -48,6 +48,9 @@ public class QuestionsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Questions");
         questionRecycler = findViewById(R.id.ques_recyclerID);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
+        questionRecycler.setLayoutManager(layoutManager);
         addQuesBtn = findViewById(R.id.add_questionBtn);
         loadingDialog = new Dialog(QuestionsActivity.this);
         loadingDialog.setContentView(R.layout.loadingprogressbar);
@@ -62,9 +65,6 @@ public class QuestionsActivity extends AppCompatActivity {
 
             }
         });
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(RecyclerView.VERTICAL);
-        questionRecycler.setLayoutManager(layoutManager);
         firestore = FirebaseFirestore.getInstance();
         loadQuestions();
 
@@ -73,6 +73,29 @@ public class QuestionsActivity extends AppCompatActivity {
     private void loadQuestions() {
         questionsList.clear();
         loadingDialog.show();
+       /* questionsList.add(new QuestionModel(
+                                ("QUESTION"),
+                                ("A"),
+                                ("B"),
+                                ("C"),
+                                ("D"),
+                                2,
+                                "A"
+                        ));
+        questionsList.add(new QuestionModel(
+                ("QUESTION"),
+                ("A"),
+                ("B"),
+                ("C"),
+                ("D"),
+                2,
+                "C"
+        ));
+        loadingDialog.dismiss();
+        adapter = new QuestionAdapter(questionsList);
+        questionRecycler.setAdapter(adapter);
+        */
+
         firestore.collection("QUIZ").document(courseList.get(selectedCourseIndex).getCourseId())
                 .collection(difficultyIDs.get(selected_diff_level_index))
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -85,25 +108,28 @@ public class QuestionsActivity extends AppCompatActivity {
                     QueryDocumentSnapshot quesListDoc = docList.get("QUESTION_LIST");
                 Log.d("QuestionDocList", "onSuccess: "+quesListDoc.get("COUNT"));
                 Log.d("QUestionDocList", "onSuccess: "+quesListDoc.getString("Q1_ID"));
+                String count = quesListDoc.getString("COUNT");
+                Log.d("TAG", "onSuccess: "+Integer.valueOf(count));
+                for(int i = 0 ; i < Integer.valueOf(count) ; i++ ){
+                        String quesId = quesListDoc.getString("Q"+(i+1)+"_ID");
+                        QueryDocumentSnapshot quesDoc = docList.get(quesId);
+                    Log.d("TAG", "onSuccess: "+docList.get(quesId));
+                    Log.d("TAG", "onSuccess: "+quesDoc.getString("QUESTION"));
 
-
-//                String count = quesListDoc.getString("COUNT");
-//                    for(int i = 0 ; i < Integer.valueOf("1") ; i++ ){
-//                        String quesId = quesListDoc.getString("Q"+(i+1)+"_ID");
-//                        QueryDocumentSnapshot quesDoc = docList.get(quesId);
-//                        questionsList.add(new QuestionModel(
-//                                quesDoc.getString("QUESTION"),
-//                                quesDoc.getString("A"),
-//                                quesDoc.getString("B"),
-//                                quesDoc.getString("C"),
-//                                quesDoc.getString("D"),
-//                                Integer.parseInt(quesDoc.getString("ANSWER")),
-//                                quesId
-//                        ));
-//                    }
-                    loadingDialog.dismiss();
+                        questionsList.add(new QuestionModel(
+                                quesDoc.getString("QUESTION"),
+                                quesDoc.getString("A"),
+                                quesDoc.getString("B"),
+                                quesDoc.getString("C"),
+                                quesDoc.getString("D"),
+                                2,
+                                quesId
+                        ));
+                    }
                     adapter = new QuestionAdapter(questionsList);
                     questionRecycler.setAdapter(adapter);
+                    loadingDialog.dismiss();
+
             }
         })
                 .addOnFailureListener(new OnFailureListener() {

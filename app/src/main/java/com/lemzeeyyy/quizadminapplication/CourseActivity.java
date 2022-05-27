@@ -116,7 +116,7 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
                                 @Override
                                 public void onSuccess(Void unused) {
                                     Toast.makeText(CourseActivity.this,"category added successfully",Toast.LENGTH_SHORT).show();
-                                    courseList.add(new CourseModel(doc_id,title,0,"1"));
+                                    courseList.add(new CourseModel(doc_id,title,"0","1"));
                                     adapter.notifyItemInserted(courseList.size());
                                     loadingDialog.dismiss();
 
@@ -155,7 +155,7 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
                             for (int i = 1; i <= count; i++) {
                                 String courseName = doc.getString("CAT"+String.valueOf(i)+"_NAME");
                                 String courseId = doc.getString("CAT"+String.valueOf(i)+"_ID");
-                                courseList.add(new CourseModel(courseId,courseName,0,"1"));
+                                courseList.add(new CourseModel(courseId,courseName,"0","1"));
                             }
                             adapter = new CourseAdapter(courseList,CourseActivity.this,this);
                             courseRecyclerView.setAdapter(adapter);

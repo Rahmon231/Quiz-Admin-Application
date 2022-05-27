@@ -68,6 +68,7 @@ public class DifficultyActivity extends AppCompatActivity {
         loadingDialog.dismiss();
         String curr_courseId = courseList.get(selectedCourseIndex).getCourseId();
         final String curr_counter = courseList.get(selectedCourseIndex).getDiffCounter();
+        Log.d("DiffCounter", "addNewDiffLevel: "+courseList.get(selectedCourseIndex).getDiffCounter());
         Map<String, Object> qData = new ArrayMap<>();
         qData.put("COUNT","0");
         firestore.collection("QUIZ").document(curr_courseId)
@@ -76,17 +77,21 @@ public class DifficultyActivity extends AppCompatActivity {
                 .set(qData)
                 .addOnSuccessListener(unused -> {
                     Map<String,Object> courseDoc = new ArrayMap<>();
-                    Log.d("CounterCheck", "addNewDiffLevel: "+String.valueOf(Integer.parseInt(curr_counter)+1));
                     courseDoc.put("COUNTER",(String.valueOf(Integer.parseInt(curr_counter)+1)));
-                    courseDoc.put("DIFFICULTY"+(difficultyIDs.size()+1)+"_ID",curr_counter);
+                    courseDoc.put(new StringBuilder().append("DIFFICULTY").append(difficultyIDs.size() + 1).append("_ID").toString(),(curr_counter));
                     courseDoc.put("DIFFICULTY",difficultyIDs.size()+1);
+                    Log.d("counter", "addNewDiffLevel: "+courseDoc.get("COUNTER"));
+                    Log.d("Level", "addNewDiffLevel: "+courseDoc.get("DIFFICULTY"));
+
+                    Log.d("TAG", "addNewDiffLevel: " +courseDoc.get("DIFFICULTY10_ID"));
+
                     firestore.collection("QUIZ").document(curr_courseId)
                             .update(courseDoc)
                             .addOnSuccessListener(unused1 -> {
                                 Toast.makeText(DifficultyActivity.this, "Difficulty Level Added Successfully",
                                         Toast.LENGTH_SHORT).show();
                                 difficultyIDs.add(curr_counter);
-                                courseList.get(selectedCourseIndex).setDifficulty_level(difficultyIDs.size());
+                                courseList.get(selectedCourseIndex).setDifficulty_level(String.valueOf(difficultyIDs.size()));
                                 courseList.get(selectedCourseIndex).setDiffCounter(String.valueOf(Integer.parseInt(curr_counter)+1));
                                 adapter.notifyItemInserted(difficultyIDs.size());
                                 loadingDialog.dismiss();
@@ -111,11 +116,14 @@ public class DifficultyActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 long noOfLevel = (long) documentSnapshot.get("DIFFICULTY");
-                for (int i = 0; i < noOfLevel ; i++){
-                    difficultyIDs.add(documentSnapshot.get("DIFFICULTY")+String.valueOf(i)+"_ID");
+                for (int i = 1; i <= noOfLevel ; i++){
+                    difficultyIDs.add(documentSnapshot.getString("DIFFICULTY"+String.valueOf(i)+"_ID"));
+                    Log.d("DifficultyID", "onSuccess: "+documentSnapshot.getString("DIFFICULTY"+String.valueOf(i)+"_ID"));
+
                 }
                 courseList.get(selectedCourseIndex).setDiffCounter(documentSnapshot.getString("COUNTER"));
-                courseList.get(selectedCourseIndex).setDifficulty_level(Integer.parseInt(String.valueOf(noOfLevel)));
+                courseList.get(selectedCourseIndex).setDifficulty_level((String.valueOf(noOfLevel)));
+                Log.d("Difficulty", "onSuccess: "+difficultyIDs.get(1));
                 adapter = new DifficultyAdapter(difficultyIDs);
                 diffRecyclerVier.setAdapter(adapter);
                 loadingDialog.dismiss();

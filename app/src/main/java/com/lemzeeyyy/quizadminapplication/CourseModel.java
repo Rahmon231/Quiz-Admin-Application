@@ -5,11 +5,11 @@ import java.util.List;
 public class CourseModel {
     private String courseId;
     private String courseName;
-    private int difficulty_level;
+    private String difficulty_level;
     private String diffCounter;
 
 
-    public CourseModel(String courseId, String courseName, int difficulty_level, String diffCounter) {
+    public CourseModel(String courseId, String courseName, String difficulty_level, String diffCounter) {
         this.courseId = courseId;
         this.courseName = courseName;
         this.difficulty_level = difficulty_level;
@@ -40,11 +40,11 @@ public class CourseModel {
         this.courseName = courseName;
     }
 
-    public int getDifficulty_level() {
+    public String getDifficulty_level() {
         return difficulty_level;
     }
 
-    public void setDifficulty_level(int difficulty_level) {
+    public void setDifficulty_level(String difficulty_level) {
         this.difficulty_level = difficulty_level;
     }
 }

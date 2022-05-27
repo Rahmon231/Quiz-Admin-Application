@@ -2,6 +2,7 @@ package com.lemzeeyyy.quizadminapplication;
 
 import static com.lemzeeyyy.quizadminapplication.CourseActivity.courseList;
 import static com.lemzeeyyy.quizadminapplication.CourseActivity.selectedCourseIndex;
+import static com.lemzeeyyy.quizadminapplication.DifficultyActivity.difficultyIDs;
 import static com.lemzeeyyy.quizadminapplication.DifficultyActivity.selected_diff_level_index;
 
 import android.app.AlertDialog;
@@ -10,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,6 +112,7 @@ public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyAdapter.Vi
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        Log.d("TAG", "onSuccess: "+difficultyID);
                         WriteBatch batch = firestore.batch();
                         for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
                             batch.delete(doc.getReference());
@@ -119,7 +122,8 @@ public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyAdapter.Vi
                             int index = 1 ;
                             for(int i = 0 ; i < difficultyIds.size() ; i++){
                                 if(i!=position){
-                                    catDoc.put("DIFFICULTY" +String.valueOf(index)+"_ID",difficultyIds.get(i));
+                                    catDoc.put("DIFFICULTY"+String.valueOf(index)+"_ID" , difficultyIds.get(i));
+                                    Log.d("diddicultyid", "onSuccess: "+difficultyIds.get(i));
                                     index++;
                                 }
                             }
@@ -131,8 +135,8 @@ public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyAdapter.Vi
                                         public void onSuccess(Void unused) {
                                             Toast.makeText(context, "Difficulty level deleted successfully"
                                                     , Toast.LENGTH_SHORT).show();
-                                            DifficultyActivity.difficultyIDs.remove(position);
-                                            courseList.get(selectedCourseIndex).setDifficulty_level(DifficultyActivity.difficultyIDs.size());
+                                            difficultyIDs.remove(position);
+                                            courseList.get(selectedCourseIndex).setDifficulty_level((String.valueOf(difficultyIDs.size())));
                                             adapter.notifyDataSetChanged();
                                             loadingDialog.dismiss();
                                         }
