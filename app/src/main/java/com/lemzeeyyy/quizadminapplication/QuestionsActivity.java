@@ -122,7 +122,7 @@ public class QuestionsActivity extends AppCompatActivity {
                                 quesDoc.getString("B"),
                                 quesDoc.getString("C"),
                                 quesDoc.getString("D"),
-                                2,
+                                Integer.parseInt(quesDoc.getString("ANSWER")),
                                 quesId
                         ));
                     }
