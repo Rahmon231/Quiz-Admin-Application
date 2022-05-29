@@ -15,6 +15,7 @@
         <entry key="app/src/main/res/layout/activity_difficulty.xml" value="0.21467391304347827" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_questions.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_questions_details.xml" value="0.21467391304347827" />
         <entry key="app/src/main/res/layout/add_category_layout.xml" value="0.240625" />
         <entry key="app/src/main/res/layout/add_course_layout.xml" value="0.240625" />
         <entry key="app/src/main/res/layout/cat_item_layout.xml" value="0.240625" />

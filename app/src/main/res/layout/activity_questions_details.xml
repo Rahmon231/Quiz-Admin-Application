@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".QuestionsDetailsActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/ques_details_toolBarID"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/purple_200"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/addNewQBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/purple_200"
+        android:textColor="@color/accent"
+        android:textSize="20sp"
+        android:padding="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/addNewQBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ques_details_toolBarID">
+
+        <EditText
+            android:id="@+id/questionID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:maxLines="7"
+            android:lines="5"
+            android:layout_marginBottom="50dp"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@android:color/black"
+            android:textCursorDrawable="@null"
+            android:hint="Question" />
+
+        <EditText
+            android:id="@+id/optionAID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:ems="10"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@android:color/black"
+            android:textCursorDrawable="@null"
+            android:inputType="textPersonName"
+            android:hint="OptionA" />
+
+        <EditText
+            android:id="@+id/optionBID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:ems="10"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@android:color/black"
+            android:textCursorDrawable="@null"
+            android:inputType="textPersonName"
+            android:hint="OptionB" />
+
+        <EditText
+            android:id="@+id/optionCID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:ems="10"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@android:color/black"
+            android:textCursorDrawable="@null"
+            android:inputType="textPersonName"
+            android:hint="OptionC" />
+        <EditText
+            android:id="@+id/optionDID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:ems="10"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@android:color/black"
+            android:textCursorDrawable="@null"
+            android:inputType="textPersonName"
+            android:hint="OptionD" />
+        <EditText
+            android:id="@+id/correctAnsID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:ems="10"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@android:color/black"
+            android:textCursorDrawable="@null"
+            android:inputType="textPersonName"
+            android:hint="Answer" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
