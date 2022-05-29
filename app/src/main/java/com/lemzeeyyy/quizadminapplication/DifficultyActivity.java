@@ -125,7 +125,6 @@ public class DifficultyActivity extends AppCompatActivity {
                 }
                 courseList.get(selectedCourseIndex).setDiffCounter(documentSnapshot.getString("COUNTER"));
                 courseList.get(selectedCourseIndex).setDifficulty_level((String.valueOf(noOfLevel)));
-                Log.d("Difficulty", "onSuccess: "+difficultyIDs.get(1));
                 adapter = new DifficultyAdapter(difficultyIDs);
                 diffRecyclerVier.setAdapter(adapter);
                 loadingDialog.dismiss();
