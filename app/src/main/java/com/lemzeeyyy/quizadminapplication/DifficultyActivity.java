@@ -13,6 +13,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -45,6 +46,7 @@ public class DifficultyActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.diffToolBarID);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Difficulty Levels");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         loadingDialog = new Dialog(DifficultyActivity.this);
         loadingDialog.setContentView(R.layout.loadingprogressbar);
         loadingDialog.setCancelable(false);
@@ -136,6 +138,15 @@ public class DifficultyActivity extends AppCompatActivity {
                         loadingDialog.dismiss();
                     }
                 });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if(item.getItemId() == android.R.id.home){
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

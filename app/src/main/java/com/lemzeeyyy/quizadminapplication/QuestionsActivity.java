@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -47,6 +49,7 @@ public class QuestionsActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.ques_toolBarID);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Questions");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         questionRecycler = findViewById(R.id.ques_recyclerID);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -62,7 +65,10 @@ public class QuestionsActivity extends AppCompatActivity {
         addQuesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+               Intent intent = new Intent(QuestionsActivity.this,
+                       QuestionsDetailsActivity.class);
+               intent.putExtra("ACTION","ADD");
+               startActivity(intent);
             }
         });
         firestore = FirebaseFirestore.getInstance();
@@ -139,5 +145,20 @@ public class QuestionsActivity extends AppCompatActivity {
                         loadingDialog.dismiss();
                     }
                 });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(adapter!=null)
+        adapter.notifyDataSetChanged();
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if(item.getItemId() == android.R.id.home){
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

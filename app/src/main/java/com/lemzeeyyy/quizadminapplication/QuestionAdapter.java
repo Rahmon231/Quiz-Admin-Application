@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +71,17 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         }
         private void setData(int pos,QuestionAdapter adapter){
             title.setText("QUESTION "+String.valueOf(pos+1));
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(itemView.getContext(),QuestionsDetailsActivity.class);
+                    intent.putExtra("ACTION","EDIT");
+                    intent.putExtra("Q_ID",pos);
+                    itemView.getContext().startActivity(intent);
+
+                }
+            });
             question_delete_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
