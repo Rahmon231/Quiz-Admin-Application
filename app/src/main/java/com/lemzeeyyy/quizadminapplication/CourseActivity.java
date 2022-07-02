@@ -28,6 +28,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +64,7 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
         loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
         firestore = FirebaseFirestore.getInstance();
 
-        loadDate();
+        loadData();
 
         addCourseDialog = new Dialog(CourseActivity.this);
         addCourseDialog.setContentView(R.layout.add_course_layout);
@@ -79,26 +82,32 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
                 dialogCourseName.setError("Enter Category name");
                 return;
             }
-            for (int i = 0; i < courseList.size(); i++) {
-                if(dialogCourseName.getText().toString().equalsIgnoreCase(courseList.get(i).getCourseName())){
-                    Log.d("ExistingCourse", "addNewCourse: Course already exists");
+            String title = dialogCourseName.getText().toString().trim();
+            int i;
+            for ( i = 0; i < courseList.size(); i++) {
+                if(title.equalsIgnoreCase(courseList.get(i).getCourseName())){
                     break;
-                }else
-                    addNewCourse(dialogCourseName.getText().toString());
-                break;
+                }
             }
-
-        });
+            if(i == courseList.size()){
+                addNewCourse(title);
+                Toast.makeText(CourseActivity.this, "Course added successfully",
+                        Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(CourseActivity.this, "Course available",
+                        Toast.LENGTH_SHORT).show();
+            }
+  });
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         courseRecyclerView.setLayoutManager(layoutManager);
-
 
     }
 
     private void addNewCourse(String title) {
         addCourseDialog.dismiss();
         loadingDialog.show();
+
         Map<String, Object> courseData = new ArrayMap<>();
                 courseData.put("NAME",title);
                 courseData.put("DIFFICULTY",0);
@@ -111,6 +120,7 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
                             catDoc.put("CAT" + String.valueOf(courseList.size()+1)+"_NAME",title);
                             catDoc.put("CAT" + String.valueOf(courseList.size()+1)+"_ID",doc_id);
                             catDoc.put("COUNT", courseList.size()+1);
+
                             firestore.collection("QUIZ").document("Categories")
                                     .update(catDoc).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -143,7 +153,7 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
                         });
         }
 
-    private void loadDate() {
+    private void loadData() {
         loadingDialog.show();
         courseList.clear();
         firestore.collection("QUIZ").document("Categories")
@@ -193,25 +203,32 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
     private void deleteCategory(final int pos, Context context, CourseAdapter adapter) {
         loadingDialog.show();
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        Map<String,Object> courseDoc = new ArrayMap<>();
-        int index = 1;
-        for (int i = 0; i < courseList.size(); i++) {
-            if(i != pos){
-                courseDoc.put("CAT"+index +"_ID",courseList.get(i).getCourseId());
-                courseDoc.put("CAT"+index +"_NAME",courseList.get(i).getCourseName());
-                index++;
-            }
-        }
-        courseDoc.put("COUNT",index-1);
-        firestore.collection("QUIZ").document("Categories")
-                .set(courseDoc).addOnSuccessListener(unused -> {
-                    Toast.makeText(context, "Category deleted successfully", Toast.LENGTH_SHORT)
-                            .show();
-                    CourseActivity.courseList.remove(pos);
-                    adapter.notifyDataSetChanged();
-                    loadingDialog.dismiss();
+        firestore.collection("QUIZ").document(courseList.get(pos).getCourseId()).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Map<String,Object> courseDoc = new ArrayMap<>();
+                        int index = 1;
+                        for (int i = 0; i < courseList.size(); i++) {
+                            if(i != pos){
+                                courseDoc.put("CAT"+index +"_ID",courseList.get(i).getCourseId());
+                                courseDoc.put("CAT"+index +"_NAME",courseList.get(i).getCourseName());
+                                index++;
+                            }
+                        }
+                        courseDoc.put("COUNT",index-1);
+                        firestore.collection("QUIZ").document("Categories")
+                                .set(courseDoc).addOnSuccessListener(unused1 -> {
+                                    Toast.makeText(context, "Category deleted successfully", Toast.LENGTH_SHORT)
+                                            .show();
+                                    CourseActivity.courseList.remove(pos);
+                                    adapter.notifyDataSetChanged();
+                                    loadingDialog.dismiss();
 
-                }).addOnFailureListener(e -> Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show());
+                                }).addOnFailureListener(e -> Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show());
+
+                    }
+                });
 
     }
 }

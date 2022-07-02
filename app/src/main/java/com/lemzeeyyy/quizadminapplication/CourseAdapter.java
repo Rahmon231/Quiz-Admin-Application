@@ -141,7 +141,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
     private void deleteCategory(final int pos, Context context, CourseAdapter adapter) {
         loadingDialog.show();
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-                Map<String,Object> courseDoc = new ArrayMap<>();
+        Map<String,Object> courseDoc = new ArrayMap<>();
         int index = 1;
         for (int i = 0; i < courseList.size(); i++) {
             if(i != pos){
