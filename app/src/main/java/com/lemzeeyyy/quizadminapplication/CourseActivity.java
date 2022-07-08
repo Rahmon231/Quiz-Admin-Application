@@ -84,6 +84,7 @@ public class CourseActivity extends AppCompatActivity implements onDeleteClick{
             }
             String title = dialogCourseName.getText().toString().trim();
             int i;
+            //ignore if course is already in the list
             for ( i = 0; i < courseList.size(); i++) {
                 if(title.equalsIgnoreCase(courseList.get(i).getCourseName())){
                     break;
